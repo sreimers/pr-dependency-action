@@ -1,0 +1,20 @@
+name: 'Pull request dependency action'
+inputs:
+  repo:  # id of input
+    description: 'git repo dependency to checkout'
+    required: true
+    default: ''
+runs:
+  using: "composite"
+  steps: 
+    - name: checkout 
+      if: github.event_name == 'pull_request'
+      run: |
+        pr_title=$(hub pr show -f %t $PR_NUMBER)
+        git clone ${{ inputs.repo }} && cd projectB
+        pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
+        if [ -n "$pr_dependency" ]; then hub pr checkout $pr_dependency; fi
+      shell: bash -ex {0}
+      env:
+        PR_NUMBER: ${{ github.event.number }} # needs to be done after checkout?
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
