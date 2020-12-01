@@ -16,11 +16,10 @@ runs:
     - name: checkout 
       run: |
         pr_title=$(hub pr show -f %t $PR_NUMBER || echo 'no_pull_request_found')
-        git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
+        cd ${{ inputs.working-directory }} && git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
         pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
         if [ -n "$pr_dependency" ]; then hub pr checkout $pr_dependency; fi
       shell: bash -e {0}
-      working-directory: ${{ inputs.working-directory }}
       env:
         PR_NUMBER: ${{ github.event.number }}
         GITHUB_TOKEN: ${{ inputs.secret }}
