@@ -16,7 +16,7 @@ runs:
         git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
         pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
         if [ -n "$pr_dependency" ]; then hub pr checkout $pr_dependency; fi
-      shell: bash -ex {0}
+      shell: bash -e {0}
       env:
         PR_NUMBER: ${{ github.event.number }}
         GITHUB_TOKEN: ${{ inputs.secret }}
