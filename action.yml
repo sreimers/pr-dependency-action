@@ -8,7 +8,6 @@ runs:
   using: "composite"
   steps: 
     - name: checkout 
-      if: github.event_name == 'pull_request'
       run: |
         pr_title=$(hub pr show -f %t $PR_NUMBER)
         git clone ${{ inputs.repo }} && cd projectB
