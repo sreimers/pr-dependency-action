@@ -7,6 +7,9 @@ inputs:
     required: true
   secret:
     required: true
+  working-directory:
+    required: false
+    default: '.'
 runs:
   using: "composite"
   steps: 
@@ -17,6 +20,7 @@ runs:
         pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
         if [ -n "$pr_dependency" ]; then hub pr checkout $pr_dependency; fi
       shell: bash -e {0}
+      working-directory: ${{ inputs.working-directory }}
       env:
         PR_NUMBER: ${{ github.event.number }}
         GITHUB_TOKEN: ${{ inputs.secret }}
