@@ -1,8 +1,9 @@
 name: 'Pull request dependency checkout'
 description: 'This action checks if there is a pull request in the repo with the same title.'
 author: 'Sebastian Reimers'
-icon: activity
-color: gray-dark
+branding:
+  icon: activity
+  color: gray-dark
 inputs:
   repo:
     description: 'git repo dependency to checkout'
