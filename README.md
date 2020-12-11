@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.1.0
 
-      - uses: sreimers/pr-dependency-action@v0.3
+      - uses: sreimers/pr-dependency-action@v0.4
         with:
           name: repo
           repo: https://github.com/external/repo.git
