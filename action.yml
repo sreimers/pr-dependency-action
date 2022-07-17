@@ -25,8 +25,8 @@ runs:
         cd ${{ inputs.working-directory }} && git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
         pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
         stable=$(echo $branch | grep stable || echo)
-        [ -n "$stable" ] && hub checkout stable
-        [ -n "$pr_dependency" ] && hub pr checkout $pr_dependency
+        [ -n "$stable" ] && git checkout stable || true
+        [ -n "$pr_dependency" ] && hub pr checkout $pr_dependency || true
       shell: bash -e {0}
       env:
         PR_NUMBER: ${{ github.event.number }}
