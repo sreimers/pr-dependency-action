@@ -21,10 +21,11 @@ runs:
     - name: checkout 
       run: |
         branch=$(hub branch --show-current)
-        pr_title=$(hub pr show -f %t $PR_NUMBER || echo $branch | grep "stable" || echo 'no_pull_request_found')
+        pr_title=$(hub pr show -f %t $PR_NUMBER || echo 'no_pull_request_found')
         cd ${{ inputs.working-directory }} && git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
         pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
         if [ -n "$pr_dependency" ]; then hub pr checkout $pr_dependency; fi
+        if [ "$branch" -eq "stable" ]; then hub checkout stable; fi
       shell: bash -e {0}
       env:
         PR_NUMBER: ${{ github.event.number }}
