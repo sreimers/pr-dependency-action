@@ -20,13 +20,10 @@ runs:
   steps: 
     - name: checkout 
       run: |
-        branch=$(hub branch --show-current)
-        pr_title=$(hub pr show -f %t $PR_NUMBER || echo 'no_pull_request_found')
-        cd ${{ inputs.working-directory }} && git clone ${{ inputs.repo }} && cd ${{ inputs.name }}
-        pr_dependency=$(hub pr list -f "%I;%t%n" | grep "$pr_title" | awk -F';' '{ print $1 }' || echo)
-        stable=$(echo $branch | grep stable || echo)
-        [ -n "$stable" ] && git checkout stable || true
-        [ -n "$pr_dependency" ] && hub pr checkout $pr_dependency || true
+        pr_title=$(gh pr view $PR_NUMBER -q .title --json title || echo 'no_pull_request_found')
+        cd ${{ inputs.working-directory }} && git clone ${{ inputs.repo }} ${{ inputs.name }} && cd ${{ inputs.name }}
+        pr_dependency=$(gh pr list -S "$pr_title" -q ".[] .number" --json number)
+        [ -n "$pr_dependency" ] && gh pr checkout $pr_dependency || true
       shell: bash -e {0}
       env:
         PR_NUMBER: ${{ github.event.number }}
